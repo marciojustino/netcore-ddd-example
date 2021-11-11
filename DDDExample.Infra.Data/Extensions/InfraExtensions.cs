@@ -1,7 +1,7 @@
 namespace DDDExample.Infra.Data.Extensions
 {
     using Context;
-    using DDDExample.Domain.Configs;
+    using Domain.Configs;
     using Domain.Entities;
     using Domain.Interfaces;
     using Microsoft.EntityFrameworkCore;
@@ -14,7 +14,7 @@ namespace DDDExample.Infra.Data.Extensions
         public static IServiceCollection AddInfra(this IServiceCollection services, IConfiguration configuration)
         {
             var databaseConfig = new DatabaseConfigurations();
-            configuration.Bind("Database", databaseConfig);
+            configuration.GetSection("Database").Bind(databaseConfig);
             services.AddSingleton(databaseConfig);
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(databaseConfig.ConnectionString));

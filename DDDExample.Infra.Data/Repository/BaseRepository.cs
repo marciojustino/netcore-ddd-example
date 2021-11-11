@@ -2,7 +2,7 @@ namespace DDDExample.Infra.Data.Repository
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
+    using System.Linq;
     using Context;
     using Domain.Entities;
     using Domain.Interfaces;
@@ -16,25 +16,20 @@ namespace DDDExample.Infra.Data.Repository
 
         public TEntity Insert(TEntity entity)
         {
-            var newEntity = _dbContext.Set<TEntity>().Add(entity).Entity;
-            _dbContext.SaveChanges();
-            return newEntity;
+            entity.Id = Guid.NewGuid();
+            _dbContext.Entry(entity).State = EntityState.Added;
+            return entity;
         }
 
-        public Task UpdateAsync(TEntity entity)
+        public TEntity Update(TEntity entity)
         {
-            _dbContext.Set<TEntity>().Update(entity);
-            return _dbContext.SaveChangesAsync();
+            return _dbContext.Set<TEntity>().Update(entity).Entity;
         }
 
-        public async Task DeleteAsync(Guid id)
-        {
-            _dbContext.Set<TEntity>().Remove(await SelectAsync(id));
-            await _dbContext.SaveChangesAsync();
-        }
+        public void Delete(Guid id) => _dbContext.Set<TEntity>().Remove(Select(id));
 
-        public Task<List<TEntity>> SelectAsync() => _dbContext.Set<TEntity>().ToListAsync();
+        public List<TEntity> Select() => _dbContext.Set<TEntity>().ToList();
 
-        public Task<TEntity> SelectAsync(Guid id) => _dbContext.Set<TEntity>().FindAsync(id).AsTask();
+        public TEntity Select(Guid id) => _dbContext.Set<TEntity>().Find(id);
     }
 }

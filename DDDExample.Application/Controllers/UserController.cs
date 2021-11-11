@@ -1,7 +1,6 @@
 namespace DDDExample.Application.Controllers
 {
     using System;
-    using System.Threading.Tasks;
     using Domain.Entities;
     using Domain.Interfaces;
     using Microsoft.AspNetCore.Mvc;
@@ -16,7 +15,7 @@ namespace DDDExample.Application.Controllers
         public UserController(IBaseService<User> userService) => _userService = userService;
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers() => ExecuteAsync(async () => await _userService.GetAsync());
+        public IActionResult GetUsers() => Execute(() => _userService.Get());
 
         [HttpPost]
         public IActionResult CreateUser([FromBody] User user)
@@ -27,14 +26,25 @@ namespace DDDExample.Application.Controllers
         [HttpPut("{id:guid}")]
         public IActionResult UpdateUser([FromRoute] Guid id, [FromBody] User user)
         {
-            return Execute(() => _userService.Update<UserValidator>(user));
+            return Execute(() => _userService.Update<UserValidator>(id, user));
         }
 
         [HttpDelete("{id:guid}")]
-        public IActionResult DeleteUser([FromRoute] Guid id) => ExecuteAsync(async () => await _userService.DeleteAsync(id));
+        public IActionResult DeleteUser([FromRoute] Guid id)
+        {
+            try
+            {
+                _userService.Delete(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         [HttpGet("{id:guid}")]
-        public IActionResult GetById([FromRoute] Guid id) => ExecuteAsync(async () => await _userService.GetByIdAsync(id));
+        public IActionResult GetById([FromRoute] Guid id) => Execute(() => _userService.GetById(id));
 
         private IActionResult Execute(Func<object> func)
         {
@@ -45,20 +55,7 @@ namespace DDDExample.Application.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
-            }
-        }
-
-        private IActionResult ExecuteAsync(Func<Task> func)
-        {
-            try
-            {
-                var result = func();
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
+                return StatusCode(500, e.Message);
             }
         }
     }

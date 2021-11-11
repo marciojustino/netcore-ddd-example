@@ -2,34 +2,48 @@ namespace DDDExample.Service
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
+    using System.Reflection;
     using Domain.Entities;
     using Domain.Interfaces;
     using FluentValidation;
+    using Infra.Data.Context;
 
     public class BaseService<TEntity> : IBaseService<TEntity> where TEntity : BaseEntity
     {
+        private readonly ApplicationDbContext _dbContext;
         private readonly IBaseRepository<TEntity> _repository;
 
-        public BaseService(IBaseRepository<TEntity> repository) => _repository = repository;
+        public BaseService(IBaseRepository<TEntity> repository, ApplicationDbContext dbContext)
+        {
+            _repository = repository;
+            _dbContext = dbContext;
+        }
 
         public TEntity Add<TValidator>(TEntity entity) where TValidator : AbstractValidator<TEntity>
         {
             Validate(entity, Activator.CreateInstance<TValidator>());
-            return _repository.Insert(entity);
+            var newEntity = _repository.Insert(entity);
+            _dbContext.SaveChanges();
+            return newEntity;
         }
 
-        public Task DeleteAsync(Guid id) => _repository.DeleteAsync(id);
+        public void Delete(Guid id)
+        {
+            _repository.Delete(id);
+            _dbContext.SaveChanges();
+        }
 
-        public Task<List<TEntity>> GetAsync() => _repository.SelectAsync();
+        public List<TEntity> Get() => _repository.Select();
 
-        public Task<TEntity> GetByIdAsync(Guid id) => _repository.SelectAsync(id);
+        public TEntity GetById(Guid id) => _repository.Select(id);
 
-        public async Task<TEntity> Update<TValidator>(TEntity entity) where TValidator : AbstractValidator<TEntity>
+        public TEntity Update<TValidator>(Guid id, TEntity entity) where TValidator : AbstractValidator<TEntity>
         {
             Validate(entity, Activator.CreateInstance<TValidator>());
-            await _repository.UpdateAsync(entity);
-            return entity;
+            entity.Id = id;
+            var updatedEntity = _repository.Update(entity);
+            _dbContext.SaveChanges();
+            return updatedEntity;
         }
 
         private void Validate(TEntity entity, AbstractValidator<TEntity> validator)
