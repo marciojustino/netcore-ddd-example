@@ -23,11 +23,15 @@ namespace DDDExample.Infra.Data.Mapping
                 .HasColumnName("email")
                 .HasColumnType("varchar(200)");
 
-            builder.Property(prop => prop.Password)
-                .HasConversion(prop => prop.ToString(), prop => prop)
-                .IsRequired()
-                .HasColumnName("password")
-                .HasColumnType("varchar(255)");
+            builder.OwnsOne(x => x.Password, newBuilder =>
+            {
+                newBuilder.Property(x => x.CurrentPassword)
+                    .IsRequired()
+                    .HasMaxLength(128);
+
+                newBuilder.Property(x => x.LastPassword)
+                    .HasMaxLength(256);
+            });
         }
     }
 }

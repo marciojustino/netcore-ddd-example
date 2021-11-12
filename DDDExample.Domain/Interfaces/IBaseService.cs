@@ -2,6 +2,7 @@ namespace DDDExample.Domain.Interfaces
 {
     using System;
     using System.Collections.Generic;
+    using CSharpFunctionalExtensions;
     using Entities;
     using FluentValidation;
 

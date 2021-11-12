@@ -1,11 +1,14 @@
 namespace DDDExample.Domain.Entities
 {
     using System;
-    using System.Text.Json.Serialization;
+    using Interfaces;
 
-    public abstract class BaseEntity
+    public abstract class BaseEntity : IEntity<Guid>
     {
-        [JsonPropertyName("id")]
-        public virtual Guid Id { get; set; }
+        public bool Equals(Guid x, Guid y) => x.Equals(y);
+
+        public int GetHashCode(Guid obj) => obj.GetHashCode();
+
+        public Guid Id { get; set; }
     }
 }

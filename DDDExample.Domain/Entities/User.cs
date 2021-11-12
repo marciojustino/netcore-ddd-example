@@ -1,16 +1,22 @@
 namespace DDDExample.Domain.Entities
 {
-    using System.Text.Json.Serialization;
+    using ValueObjects;
 
     public class User : BaseEntity
     {
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public User(string name, string email)
+        {
+            Name = name;
+            Email = email;
+        }
 
-        [JsonPropertyName("email")]
-        public string Email { get; set; }
+        public User(string name, string email, string password, byte[] salt)
+            : this(name, email) => Password = new Password(password, salt);
 
-        [JsonPropertyName("password")]
-        public string Password { get; set; }
+        public string Name { get; }
+        public string Email { get; }
+        public Password Password { get; }
+
+        public void ChangePassword(string plainTextPassword, byte[] salt) => Password.ChangePassword(plainTextPassword, salt);
     }
 }

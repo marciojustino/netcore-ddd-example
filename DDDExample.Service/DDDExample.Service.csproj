@@ -5,13 +5,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.12"/>
+        <PackageReference Include="CSharpFunctionalExtensions" Version="2.24.4" />
+        <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.12" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DDDExample.Domain\DDDExample.Domain.csproj"/>
-        <ProjectReference Include="..\DDDExample.Infra.Data\DDDExample.Infra.Data.csproj"/>
+        <ProjectReference Include="..\DDDExample.Domain\DDDExample.Domain.csproj" />
+        <ProjectReference Include="..\DDDExample.Infra.Data\DDDExample.Infra.Data.csproj" />
     </ItemGroup>
 
 </Project>
