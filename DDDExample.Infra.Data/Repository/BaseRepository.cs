@@ -17,7 +17,7 @@ namespace DDDExample.Infra.Data.Repository
         public TEntity Insert(TEntity entity)
         {
             entity.Id = Guid.NewGuid();
-            _dbContext.Entry(entity).State = EntityState.Added;
+            _dbContext.Add(entity);
             return entity;
         }
 

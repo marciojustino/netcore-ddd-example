@@ -1,5 +1,6 @@
 namespace DDDExample.Application
 {
+    using DDDExample.Application.Middlewares;
     using Infra.Data.Extensions;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -40,6 +41,8 @@ namespace DDDExample.Application
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<HandleExceptionsMiddleware>();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }

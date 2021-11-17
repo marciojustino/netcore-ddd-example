@@ -1,7 +1,9 @@
 namespace DDDExample.Application
 {
+    using DDDExample.Application.Providers;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
 
     public class Program
     {
@@ -12,6 +14,11 @@ namespace DDDExample.Application
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureLogging(builder =>
+                {
+                    builder.ClearProviders();
+                    builder.AddProvider(new ApplicationLogProvider());
+                })
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
 }

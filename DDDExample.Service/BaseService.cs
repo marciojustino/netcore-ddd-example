@@ -38,10 +38,9 @@ namespace DDDExample.Service
 
         public TEntity GetById(Guid id) => _repository.Select(id);
 
-        public TEntity Update<TValidator>(Guid id, TEntity entity) where TValidator : AbstractValidator<TEntity>
+        public TEntity Update<TValidator>(TEntity entity) where TValidator : AbstractValidator<TEntity>
         {
             Validate(entity, Activator.CreateInstance<TValidator>());
-            entity.Id = id;
             var updatedEntity = _repository.Update(entity);
             _dbContext.SaveChanges();
             return updatedEntity;

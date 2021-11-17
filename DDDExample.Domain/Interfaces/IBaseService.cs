@@ -12,6 +12,6 @@ namespace DDDExample.Domain.Interfaces
         void Delete(Guid id);
         List<TEntity> Get();
         TEntity GetById(Guid id);
-        TEntity Update<TValidator>(Guid id, TEntity entity) where TValidator : AbstractValidator<TEntity>;
+        TEntity Update<TValidator>(TEntity entity) where TValidator : AbstractValidator<TEntity>;
     }
 }

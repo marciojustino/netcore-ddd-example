@@ -1,12 +1,15 @@
 namespace DDDExample.Application.Controllers
 {
     using System;
+    using System.Collections.Generic;
+    using DDDExample.Domain.Dtos;
+    using DDDExample.Domain.ValueObjects;
     using Domain.Entities;
     using Domain.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using Service.Validators;
 
-    [Route("v1/[controller]")]
+    [Route("v1/users")]
     [ApiController]
     public class UserController : Controller
     {
@@ -15,18 +18,34 @@ namespace DDDExample.Application.Controllers
         public UserController(IBaseService<User> userService) => _userService = userService;
 
         [HttpGet]
-        public IActionResult GetUsers() => Execute(() => _userService.Get());
+        public IActionResult GetUsers()
+        {
+            var users = _userService.Get();
+            var dtoUsers = new List<UserRequestDto>();
+            users.ForEach(u => dtoUsers.Add(new UserRequestDto { Id = u.Id, Name = u.Name, Email = u.Email.Value }));
+            return Ok(dtoUsers);
+        }
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody] User user)
+        public IActionResult CreateUser([FromBody] UserDto userDto)
         {
-            return user is null ? BadRequest(nameof(user)) : Execute(() => _userService.Add<UserValidator>(user));
+            if (userDto is null)
+                return BadRequest(nameof(userDto));
+
+            var user = new User(userDto.Name, userDto.Email, userDto.Password, userDto.Salt);
+            return Execute(() => _userService.Add<UserValidator>(user));
         }
 
         [HttpPut("{id:guid}")]
-        public IActionResult UpdateUser([FromRoute] Guid id, [FromBody] User user)
+        public IActionResult UpdateUser([FromRoute] Guid id, [FromBody] UpdateUserDto userDto)
         {
-            return Execute(() => _userService.Update<UserValidator>(id, user));
+            var user = _userService.GetById(id);
+            if (user is null)
+                return NotFound();
+
+            user.Name = userDto.Name;
+            user.Email = new Email(userDto.Email);
+            return Execute(() => _userService.Update<UserValidator>(user));
         }
 
         [HttpDelete("{id:guid}")]
@@ -44,19 +63,22 @@ namespace DDDExample.Application.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public IActionResult GetById([FromRoute] Guid id) => Execute(() => _userService.GetById(id));
-
-        private IActionResult Execute(Func<object> func)
+        public IActionResult GetById([FromRoute] Guid id)
         {
             try
             {
-                var result = func();
-                return Ok(result);
+                return Execute(() => _userService.GetById(id));
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, ex.Message);
             }
+        }
+
+        private IActionResult Execute(Func<object> func)
+        {
+            var result = func();
+            return Ok(result);
         }
     }
 }

@@ -1,6 +1,7 @@
 namespace DDDExample.Infra.Data.Extensions
 {
     using Context;
+    using DDDExample.Domain.Interfaces.Auth;
     using Domain.Configs;
     using Domain.Entities;
     using Domain.Interfaces;
@@ -20,6 +21,7 @@ namespace DDDExample.Infra.Data.Extensions
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(databaseConfig.ConnectionString));
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddTransient<IBaseRepository<User>, BaseRepository<User>>();
+            services.AddTransient<IAuthRepository, AuthRepository>();
             return services;
         }
     }
