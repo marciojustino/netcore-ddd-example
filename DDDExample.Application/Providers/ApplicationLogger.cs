@@ -1,8 +1,8 @@
-namespace DDDExample.Application.Providers
+namespace DDDExample.Api.Providers
 {
+    using Microsoft.Extensions.Logging;
     using System;
     using System.Threading;
-    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Customização de log de console.

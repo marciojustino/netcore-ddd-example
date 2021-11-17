@@ -1,13 +1,13 @@
-namespace DDDExample.Application.Controllers
+namespace DDDExample.Api.Controllers
 {
-    using System;
-    using System.Collections.Generic;
     using DDDExample.Domain.Dtos;
     using DDDExample.Domain.ValueObjects;
     using Domain.Entities;
     using Domain.Interfaces;
     using Microsoft.AspNetCore.Mvc;
     using Service.Validators;
+    using System;
+    using System.Collections.Generic;
 
     [Route("v1/users")]
     [ApiController]
@@ -21,8 +21,15 @@ namespace DDDExample.Application.Controllers
         public IActionResult GetUsers()
         {
             var users = _userService.Get();
-            var dtoUsers = new List<UserRequestDto>();
-            users.ForEach(u => dtoUsers.Add(new UserRequestDto { Id = u.Id, Name = u.Name, Email = u.Email.Value }));
+            var dtoUsers = new List<UserResponseDto>();
+            users.ForEach(u => dtoUsers.Add(new UserResponseDto
+            {
+                Id = u.Id,
+                Name = u.Name,
+                Email = u.Email.Value,
+                Status = u.Status,
+                LastLoggedAt = u.LastLoggedAt.GetValueOrDefault(),
+            }));
             return Ok(dtoUsers);
         }
 

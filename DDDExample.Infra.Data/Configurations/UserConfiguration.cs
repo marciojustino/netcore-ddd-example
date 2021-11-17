@@ -1,8 +1,10 @@
 namespace DDDExample.Infra.Data.Configurations
 {
+    using DDDExample.Domain.Enums;
     using Domain.Entities;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
+    using System;
 
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {
@@ -33,6 +35,18 @@ namespace DDDExample.Infra.Data.Configurations
                 .Property(password => password.Value)
                 .HasColumnName("Last_Password")
                 .HasColumnType("varchar(400)");
+
+            builder.Property(p => p.LastLoggedAt)
+                .HasColumnName("Last_Logged_At")
+                .HasColumnType("datetime")
+                .IsRequired()
+                .HasDefaultValue(DateTime.Now);
+
+            builder.Property(p => p.Status)
+                .HasColumnName("Status")
+                .HasColumnType("integer")
+                .IsRequired()
+                .HasDefaultValue(RegistrationStatus.WaitingApproval);
         }
     }
 }

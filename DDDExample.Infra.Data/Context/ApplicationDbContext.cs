@@ -3,6 +3,7 @@ namespace DDDExample.Infra.Data.Context
     using Domain.Configs;
     using Domain.Entities;
     using Microsoft.EntityFrameworkCore;
+    using System;
 
     public class ApplicationDbContext : DbContext
     {

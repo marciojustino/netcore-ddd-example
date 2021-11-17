@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DDDExample.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DDDExample.Domain.Dtos
 {
-    public class UserRequestDto
+    public class UserResponseDto
     {
         [JsonPropertyName("id")]
         public Guid Id { get; set; }
@@ -17,5 +18,11 @@ namespace DDDExample.Domain.Dtos
 
         [JsonPropertyName("email")]
         public string Email { get; set; }
+
+        [JsonPropertyName("status")]
+        public RegistrationStatus Status { get; set; }
+
+        [JsonPropertyName("lastLoggedAt")]
+        public DateTime? LastLoggedAt { get; set; }
     }
 }

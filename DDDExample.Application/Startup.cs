@@ -1,6 +1,6 @@
-namespace DDDExample.Application
+namespace DDDExample.Api
 {
-    using DDDExample.Application.Middlewares;
+    using DDDExample.Api.Middlewares;
     using Infra.Data.Extensions;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;

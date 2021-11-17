@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace DDDExample.Application.Providers
+namespace DDDExample.Api.Providers
 {
     public class ApplicationLogProvider : ILoggerProvider
     {

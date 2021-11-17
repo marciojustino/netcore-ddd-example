@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{BA2F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infra", "Infra", "{FD84CBC0-5824-4B81-80D6-07C91A86581D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDExample.Application", "DDDExample.Application\DDDExample.Application.csproj", "{B47CDDA0-D45E-4086-833B-15CC7D6E8456}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDExample.Api", "DDDExample.Application\DDDExample.Api.csproj", "{B47CDDA0-D45E-4086-833B-15CC7D6E8456}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDExample.Domain", "DDDExample.Domain\DDDExample.Domain.csproj", "{8455FD44-AC75-4676-859A-78761A1CE0FE}"
 EndProject

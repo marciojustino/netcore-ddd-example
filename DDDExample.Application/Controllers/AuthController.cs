@@ -1,10 +1,9 @@
 ﻿using DDDExample.Domain.Dtos;
 using DDDExample.Domain.Interfaces.Auth;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
-namespace DDDExample.Application.Controllers
+namespace DDDExample.Api.Controllers
 {
     [Route("v1/auth")]
     [ApiController]
@@ -17,20 +16,20 @@ namespace DDDExample.Application.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] AuthDto auth)
         {
-            var authorizedUserResult = await _authService.LoginAsync(auth);
-            if (authorizedUserResult.IsSuccess)
+            var loginResult = await _authService.LoginAsync(auth);
+            if (loginResult.IsSuccess)
             {
                 return Ok(new LoggedUserDto
                 {
-                    UserName = authorizedUserResult.Value.Name,
-                    Email = authorizedUserResult.Value.Email?.Value,
-                    //LastLoggedAt = authorizedUserResult.Value.LastLoggedAt,
-                    //Status = authorizedUserResult.Value.Status,
-                    UserId = authorizedUserResult.Value.Id,
+                    UserName = loginResult.Value.Name,
+                    Email = loginResult.Value.Email?.Value,
+                    LastLoggedAt = loginResult.Value.LastLoggedAt,
+                    Status = loginResult.Value.Status,
+                    UserId = loginResult.Value.Id,
                 });
             }
 
-            return new UnauthorizedObjectResult(new { message = authorizedUserResult.Error });
+            return new UnauthorizedObjectResult(new { message = loginResult.Error });
         }
     }
 }

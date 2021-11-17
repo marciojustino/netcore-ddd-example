@@ -1,6 +1,6 @@
-namespace DDDExample.Application
+namespace DDDExample.Api
 {
-    using DDDExample.Application.Providers;
+    using DDDExample.Api.Providers;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;

@@ -1,5 +1,6 @@
 namespace DDDExample.Domain.Entities
 {
+    using DDDExample.Domain.Enums;
     using System;
     using ValueObjects;
 
@@ -9,6 +10,8 @@ namespace DDDExample.Domain.Entities
         public virtual Email Email { get; set; }
         public virtual Password CurrentPassword { get; private set; }
         public virtual Password LastPassword { get; private set; }
+        public DateTime? LastLoggedAt { get; set; } = DateTime.Now;
+        public RegistrationStatus Status { get; set; } = RegistrationStatus.WaitingApproval;
 
         protected User() { }
 
