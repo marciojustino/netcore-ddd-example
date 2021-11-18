@@ -1,4 +1,5 @@
-﻿using DDDExample.Domain.Entities;
+﻿using CSharpFunctionalExtensions;
+using DDDExample.Domain.Entities;
 using DDDExample.Domain.Interfaces.Auth;
 using DDDExample.Domain.ValueObjects;
 using DDDExample.Infra.Data.Context;
@@ -19,11 +20,16 @@ namespace DDDExample.Infra.Data.Repository
             _dbContext = dbContext;
         }
 
-        public User GetAuthorizedUser(Email email, Password password)
+        public Maybe<User> GetAuthorizedUser(Email email, Password password)
         {
-            return _dbContext.Set<User>()
+            var user = _dbContext.Set<User>()
                 .Where(x => x.Email.Value.Equals(email.Value) && x.CurrentPassword.Value.Equals(password.Value))
                 .SingleOrDefault();
+
+            if (user is null)
+                return Maybe<User>.None;
+
+            return Maybe.From(user);
         }
     }
 }

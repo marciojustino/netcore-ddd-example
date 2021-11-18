@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using DDDExample.Domain.Core.MessageBus;
 using DDDExample.Domain.Dtos;
 using DDDExample.Domain.Entities;
 using DDDExample.Domain.Interfaces;
@@ -17,17 +18,25 @@ namespace DDDExample.Service
     public class AuthService : IAuthService
     {
         private readonly IAuthRepository _authRepository;
+        private readonly IMessageBusSender _messageBus;
 
-        public AuthService(IAuthRepository authRepository) => _authRepository = authRepository;
+        public AuthService(IAuthRepository authRepository, IMessageBusSender messageBus)
+        {
+            _authRepository = authRepository;
+            _messageBus = messageBus;
+        }
 
         public Task<Result<User>> LoginAsync(AuthDto auth)
         {
             Validate(auth, new AuthValidator());
-            var authorizedUser = _authRepository.GetAuthorizedUser(new Email(auth.Email), new Password(auth.Password, auth.Salt));
-            if (authorizedUser is null)
+            var userResult = _authRepository.GetAuthorizedUser(new Email(auth.Email), new Password(auth.Password, auth.Salt));
+            if (!userResult.HasValue)
+            {
+                _messageBus.PublishAsTopicAsync("login_unauthorized", auth.Email);
                 return Task.FromResult(Result.Failure<User>("User unauthorized"));
+            }
 
-            return Task.FromResult(Result.Success(authorizedUser));
+            return Task.FromResult(Result.Success(userResult.Value));
         }
 
         private void Validate(AuthDto auth, AuthValidator validator)

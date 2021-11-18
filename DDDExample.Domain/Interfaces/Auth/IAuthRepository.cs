@@ -1,4 +1,5 @@
-﻿using DDDExample.Domain.Entities;
+﻿using CSharpFunctionalExtensions;
+using DDDExample.Domain.Entities;
 using DDDExample.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace DDDExample.Domain.Interfaces.Auth
 {
     public interface IAuthRepository
     {
-        User GetAuthorizedUser(Email email, Password password);
+        Maybe<User> GetAuthorizedUser(Email email, Password password);
     }
 }

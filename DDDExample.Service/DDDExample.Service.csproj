@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\DDDExample.Domain.Core\DDDExample.Domain.Core.csproj" />
         <ProjectReference Include="..\DDDExample.Domain\DDDExample.Domain.csproj" />
         <ProjectReference Include="..\DDDExample.Infra.Data\DDDExample.Infra.Data.csproj" />
     </ItemGroup>

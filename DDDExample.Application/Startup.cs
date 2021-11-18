@@ -1,6 +1,7 @@
 namespace DDDExample.Api
 {
     using DDDExample.Api.Middlewares;
+    using DDDExample.Infra.CrossCutting.Extensions;
     using Infra.Data.Extensions;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -21,7 +22,8 @@ namespace DDDExample.Api
         {
             services.AddControllers();
             services.AddServices(Configuration);
-            services.AddInfra(Configuration);
+            services.AddRepositories(Configuration);
+            services.AddMessageBus(Configuration);
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "DDDExample.Application", Version = "v1" }); });
         }
 

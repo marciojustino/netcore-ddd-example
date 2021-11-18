@@ -12,7 +12,7 @@ namespace DDDExample.Infra.Data.Extensions
 
     public static class InfraExtensions
     {
-        public static IServiceCollection AddInfra(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddRepositories(this IServiceCollection services, IConfiguration configuration)
         {
             var databaseConfig = new DatabaseConfigurations();
             configuration.GetSection("Database").Bind(databaseConfig);
