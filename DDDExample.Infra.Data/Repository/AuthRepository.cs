@@ -1,24 +1,17 @@
-﻿using CSharpFunctionalExtensions;
-using DDDExample.Domain.Entities;
-using DDDExample.Domain.Interfaces.Auth;
-using DDDExample.Domain.ValueObjects;
-using DDDExample.Infra.Data.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDDExample.Infra.Data.Repository
+﻿namespace DDDExample.Infra.Data.Repository
 {
+    using System.Linq;
+    using Context;
+    using CSharpFunctionalExtensions;
+    using Domain.Entities;
+    using Domain.Interfaces.Auth;
+    using Domain.ValueObjects;
+
     public class AuthRepository : IAuthRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public AuthRepository(ApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+        public AuthRepository(ApplicationDbContext dbContext) => _dbContext = dbContext;
 
         public Maybe<User> GetAuthorizedUser(Email email, Password password)
         {

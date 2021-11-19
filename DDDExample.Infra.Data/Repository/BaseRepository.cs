@@ -6,7 +6,6 @@ namespace DDDExample.Infra.Data.Repository
     using Context;
     using Domain.Entities;
     using Domain.Interfaces;
-    using Microsoft.EntityFrameworkCore;
 
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
     {
@@ -21,10 +20,7 @@ namespace DDDExample.Infra.Data.Repository
             return entity;
         }
 
-        public TEntity Update(TEntity entity)
-        {
-            return _dbContext.Set<TEntity>().Update(entity).Entity;
-        }
+        public TEntity Update(TEntity entity) => _dbContext.Set<TEntity>().Update(entity).Entity;
 
         public void Delete(Guid id) => _dbContext.Set<TEntity>().Remove(Select(id));
 

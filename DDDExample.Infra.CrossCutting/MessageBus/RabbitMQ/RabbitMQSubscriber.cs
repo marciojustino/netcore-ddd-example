@@ -1,30 +1,21 @@
-﻿using CSharpFunctionalExtensions;
-using DDDExample.Domain.Core.MessageBus;
-using DDDExample.Infra.CrossCutting.Settings;
+﻿using DDDExample.Domain.Core.MessageBus;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace DDDExample.Infra.CrossCutting.MessageBus.RabbitMQ
 {
-    public class RabbitMQSubscriber : IMessageBusSubscriber<string>
+    public class RabbitMqSubscriber : IMessageBusSubscriber<string>
     {
         private readonly IBusConnection<IModel> _connection;
-        private RabbitSubscriberOptions _options;
+        private ISubscriberOptions _options;
         private IModel _channel;
-        private readonly ILogger<RabbitMQPublisher> _logger;
+        private readonly ILogger<RabbitMqSubscriber> _logger;
 
-        public event EventHandler<SubscriberEventArgs<string>> OnMessage;
-
-        public record RabbitSubscriberOptions(string ExchangeName, string QueueName, string DeadLetterExchangeName, string DeadLetterQueue);
-
-        public RabbitMQSubscriber(IBusConnection<IModel> connection, RabbitSubscriberOptions options, ILogger<RabbitMQPublisher> logger)
+        public RabbitMqSubscriber(IBusConnection<IModel> connection, ISubscriberOptions options, ILogger<RabbitMqSubscriber> logger)
         {
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
             _options = options ?? throw new ArgumentNullException(nameof(options));
@@ -37,24 +28,26 @@ namespace DDDExample.Infra.CrossCutting.MessageBus.RabbitMQ
             InitSubscription();
         }
 
+        public event IMessageBusSubscriber<string>.OnMessageReceived OnSubscription;
+
         private void InitSubscription()
         {
             var consumer = new AsyncEventingBasicConsumer(_channel);
 
-            consumer.Received += OnMessageReceivedAsync; ;
+            consumer.Received += OnMessageReceivedAsync;
 
             _channel.BasicConsume(queue: _options.QueueName, autoAck: false, consumer: consumer);
         }
 
-        private Task OnMessageReceivedAsync(object sender, BasicDeliverEventArgs eventArgs)
+        private async Task OnMessageReceivedAsync(object sender, BasicDeliverEventArgs eventArgs)
         {
             var consumer = sender as IBasicConsumer;
             var channel = consumer?.Model ?? _channel;
             try
             {
                 var body = Encoding.UTF8.GetString(eventArgs.Body.Span);
-                OnMessage(this, new SubscriberEventArgs<string>(body));
-                return Task.CompletedTask;
+                if (OnSubscription is not null)
+                    await OnSubscription(body);
             }
             catch (Exception ex)
             {
@@ -63,7 +56,6 @@ namespace DDDExample.Infra.CrossCutting.MessageBus.RabbitMQ
                     channel.BasicReject(eventArgs.DeliveryTag, false);
                 else
                     channel.BasicNack(eventArgs.DeliveryTag, false, true);
-                return Task.FromException(ex);
             }
         }
 
@@ -92,10 +84,7 @@ namespace DDDExample.Infra.CrossCutting.MessageBus.RabbitMQ
 
             _channel.QueueBind(_options.QueueName, _options.ExchangeName, string.Empty, null);
 
-            _channel.CallbackException += (sender, ea) =>
-            {
-                Start();
-            };
+            _channel.CallbackException += (sender, ea) => Start();
         }
     }
 }

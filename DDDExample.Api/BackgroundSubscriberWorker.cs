@@ -19,15 +19,17 @@ namespace DDDExample.Api
             _logger = logger;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _subscriber.Start();
-            _subscriber.OnMessage += ReceivedMessage;
+            _subscriber.OnSubscription += OnReceiveMessage;
+            return Task.CompletedTask;
         }
 
-        private void ReceivedMessage(object sender, SubscriberEventArgs<string> e)
+        private Task<Result> OnReceiveMessage(string message)
         {
-            _logger.LogDebug("[x] Received message form message bus.|Message={0}", e.Message);
+            _logger.LogDebug("[x] Received message form message bus.|Message={0}", message);
+            return Task.FromResult(Result.Success());
         }
     }
 }

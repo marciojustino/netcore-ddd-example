@@ -1,13 +1,9 @@
-﻿using DDDExample.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
-namespace DDDExample.Domain.Dtos
+﻿namespace DDDExample.Domain.Dtos
 {
+    using System;
+    using System.Text.Json.Serialization;
+    using Enums;
+
     public class UserResponseDto
     {
         [JsonPropertyName("id")]

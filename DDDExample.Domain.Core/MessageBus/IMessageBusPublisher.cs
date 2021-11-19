@@ -1,14 +1,11 @@
-﻿using CSharpFunctionalExtensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDDExample.Domain.Core.MessageBus
+﻿namespace DDDExample.Domain.Core.MessageBus
 {
-    public interface IMessageBusPublisher<TMessage> : IDisposable
+    using System;
+    using System.Threading.Tasks;
+    using CSharpFunctionalExtensions;
+
+    public interface IMessageBusPublisher<in TMessage> : IDisposable
     {
-        Task<Result> PublishAsync(TMessage message);
+        Task<Result> PublishAsync(string exchangeName, TMessage message);
     }
 }

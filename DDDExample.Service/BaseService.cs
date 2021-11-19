@@ -2,8 +2,6 @@ namespace DDDExample.Service
 {
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
-    using CSharpFunctionalExtensions;
     using Domain.Entities;
     using Domain.Interfaces;
     using FluentValidation;

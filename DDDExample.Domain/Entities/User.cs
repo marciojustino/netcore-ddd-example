@@ -1,19 +1,14 @@
 namespace DDDExample.Domain.Entities
 {
-    using DDDExample.Domain.Enums;
     using System;
+    using Enums;
     using ValueObjects;
 
     public class User : BaseEntity
     {
-        public string Name { get; set; }
-        public virtual Email Email { get; set; }
-        public virtual Password CurrentPassword { get; private set; }
-        public virtual Password LastPassword { get; private set; }
-        public DateTime? LastLoggedAt { get; set; } = DateTime.Now;
-        public RegistrationStatus Status { get; set; } = RegistrationStatus.WaitingApproval;
-
-        protected User() { }
+        protected User()
+        {
+        }
 
         public User(string name, string email, string password, string salt) : this()
         {
@@ -22,6 +17,13 @@ namespace DDDExample.Domain.Entities
             LastPassword = CurrentPassword;
             CurrentPassword = new Password(password, salt);
         }
+
+        public string Name { get; set; }
+        public virtual Email Email { get; set; }
+        public virtual Password CurrentPassword { get; private set; }
+        public virtual Password LastPassword { get; private set; }
+        public DateTime? LastLoggedAt { get; set; } = DateTime.Now;
+        public RegistrationStatus Status { get; set; } = RegistrationStatus.WaitingApproval;
 
         public void ChangePassword(string newPlainTextPassword, string salt)
         {

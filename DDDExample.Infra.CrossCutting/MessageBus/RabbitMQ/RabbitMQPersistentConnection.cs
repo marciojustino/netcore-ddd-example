@@ -1,24 +1,17 @@
-﻿using DDDExample.Domain.Core.MessageBus;
-using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDDExample.Infra.CrossCutting.MessageBus.RabbitMQ
+﻿namespace DDDExample.Infra.CrossCutting.MessageBus.RabbitMQ
 {
+    using System;
+    using Domain.Core.MessageBus;
+    using global::RabbitMQ.Client;
+
     public class RabbitMQPersistentConnection : IBusConnection<IModel>
     {
         private readonly IConnectionFactory _connectionFactory;
+        private readonly object semaphore = new();
         private IConnection _connection;
         private bool _disposed;
-        private readonly object semaphore = new object();
 
-        public RabbitMQPersistentConnection(IConnectionFactory connectionFactory)
-        {
-            _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
-        }
+        public RabbitMQPersistentConnection(IConnectionFactory connectionFactory) => _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
 
         public IModel CreateChannel()
         {
@@ -29,6 +22,17 @@ namespace DDDExample.Infra.CrossCutting.MessageBus.RabbitMQ
 
             return _connection.CreateModel();
         }
+
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            _connection.Dispose();
+            _disposed = true;
+        }
+
+        public bool IsConnected() => _connection is not null && _connection.IsOpen && !_disposed;
 
         private void TryConnect()
         {
@@ -42,20 +46,6 @@ namespace DDDExample.Infra.CrossCutting.MessageBus.RabbitMQ
                 _connection.ConnectionBlocked += (sender, ea) => TryConnect();
                 _connection.CallbackException += (sender, ea) => TryConnect();
             }
-        }
-
-        public void Dispose()
-        {
-            if (_disposed)
-                return;
-
-            _connection.Dispose();
-            _disposed = true;
-        }
-
-        public bool IsConnected()
-        {
-            return _connection is not null && _connection.IsOpen && !_disposed;
         }
     }
 }

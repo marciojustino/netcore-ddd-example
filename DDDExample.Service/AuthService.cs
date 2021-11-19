@@ -1,29 +1,27 @@
-﻿using CSharpFunctionalExtensions;
-using DDDExample.Domain.Core.MessageBus;
-using DDDExample.Domain.Dtos;
-using DDDExample.Domain.Entities;
-using DDDExample.Domain.Interfaces;
-using DDDExample.Domain.Interfaces.Auth;
-using DDDExample.Domain.ValueObjects;
-using DDDExample.Service.Validators;
-using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDDExample.Service
+﻿namespace DDDExample.Service
 {
+    using System;
+    using System.Threading.Tasks;
+    using CSharpFunctionalExtensions;
+    using Domain.Core.MessageBus;
+    using Domain.Dtos;
+    using Domain.Entities;
+    using Domain.Interfaces.Auth;
+    using Domain.ValueObjects;
+    using FluentValidation;
+    using Validators;
+
     public class AuthService : IAuthService
     {
         private readonly IAuthRepository _authRepository;
         private readonly IMessageBusPublisher<string> _messageBus;
+        private readonly ISubscriberOptions _options;
 
-        public AuthService(IAuthRepository authRepository, IMessageBusPublisher<string> messageBus)
+        public AuthService(IAuthRepository authRepository, IMessageBusPublisher<string> messageBus, ISubscriberOptions options)
         {
             _authRepository = authRepository;
             _messageBus = messageBus;
+            _options = options;
         }
 
         public Task<Result<User>> LoginAsync(AuthDto auth)
@@ -32,7 +30,7 @@ namespace DDDExample.Service
             var userResult = _authRepository.GetAuthorizedUser(new Email(auth.Email), new Password(auth.Password, auth.Salt));
             if (!userResult.HasValue)
             {
-                _messageBus.PublishAsync(auth.Email);
+                _messageBus.PublishAsync(_options.ExchangeName, auth.Email);
                 return Task.FromResult(Result.Failure<User>("User unauthorized"));
             }
 

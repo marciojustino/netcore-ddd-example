@@ -5,12 +5,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CSharpFunctionalExtensions" Version="2.24.4" />
-      <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
+        <PackageReference Include="CSharpFunctionalExtensions" Version="2.24.4" />
+        <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DDDExample.Domain.Core\DDDExample.Domain.Core.csproj" />
+        <ProjectReference Include="..\DDDExample.Domain.Core\DDDExample.Domain.Core.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,47 +1,39 @@
-﻿using DDDExample.Domain.Core.MessageBus;
-using DDDExample.Infra.CrossCutting.MessageBus.RabbitMQ;
-using DDDExample.Infra.CrossCutting.Settings;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDDExample.Infra.CrossCutting.Extensions
+﻿namespace DDDExample.Infra.CrossCutting.Extensions
 {
+    using Domain.Core.MessageBus;
+    using MessageBus.RabbitMQ;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using RabbitMQ.Client;
+
     public static class MessageBusExtensions
     {
         public static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
         {
-            var rabbitMQConfig = configuration.GetSection("MessageBus:RabbitMQ");
-            var exchangeName = rabbitMQConfig["Exchange"];
-            var queueName = rabbitMQConfig["Queue"];
-            var deadLetterExchange = rabbitMQConfig["DeadLetterExchange"];
-            var deadLetterQueue = rabbitMQConfig["DeadLetterQueue"];
-            var subscriberOptions = new RabbitMQSubscriber.RabbitSubscriberOptions(exchangeName, queueName, deadLetterExchange, deadLetterQueue);
-            services.AddSingleton(subscriberOptions);
+            var rabbitMqConfig = configuration.GetSection("MessageBus:RabbitMQ");
+            var exchangeName = rabbitMqConfig["Exchange"];
+            var queueName = rabbitMqConfig["Queue"];
+            var deadLetterExchange = rabbitMqConfig["DeadLetterExchange"];
+            var deadLetterQueue = rabbitMqConfig["DeadLetterQueue"];
+            var subscriberOptions = new RabbitMqSubscriberOptions(exchangeName, queueName, deadLetterExchange, deadLetterQueue);
+            var publisherOptions = new RabbitMqPublisherOptions(exchangeName);
+            services.AddSingleton<ISubscriberOptions>(subscriberOptions);
+            services.AddSingleton<IPublisherOptions>(publisherOptions);
 
-            var connectionFactory = new ConnectionFactory()
+            var connectionFactory = new ConnectionFactory
             {
-                HostName = rabbitMQConfig["HostName"],
-                UserName = rabbitMQConfig["UserName"],
-                Password = rabbitMQConfig["Password"],
+                HostName = rabbitMqConfig["HostName"],
+                UserName = rabbitMqConfig["UserName"],
+                Password = rabbitMqConfig["Password"],
                 Port = AmqpTcpEndpoint.UseDefaultPort,
-                DispatchConsumersAsync = true // this is mandatory to have Async Subscribers
+                DispatchConsumersAsync = true, // this is mandatory to have Async Subscribers
             };
+            
             services.AddSingleton<IConnectionFactory>(connectionFactory);
             services.AddSingleton<IBusConnection<IModel>, RabbitMQPersistentConnection>();
-            services.AddSingleton<IMessageBusPublisher<string>>(sp =>
-            {
-                var connection = sp.GetRequiredService<IBusConnection<IModel>>();
-                var logger = sp.GetRequiredService <ILogger<RabbitMQPublisher>>();
-                return new RabbitMQPublisher(connection, exchangeName, logger);
-            });
-            services.AddSingleton<IMessageBusSubscriber<string>, RabbitMQSubscriber>();
+            services.AddSingleton<IMessageBusPublisher<string>, RabbitMqPublisher>();
+            services.AddSingleton<IMessageBusSubscriber<string>, RabbitMqSubscriber>();
 
             return services;
         }

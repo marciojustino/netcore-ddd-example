@@ -1,10 +1,10 @@
 namespace DDDExample.Infra.Data.Configurations
 {
-    using DDDExample.Domain.Enums;
+    using System;
     using Domain.Entities;
+    using Domain.Enums;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
-    using System;
 
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {

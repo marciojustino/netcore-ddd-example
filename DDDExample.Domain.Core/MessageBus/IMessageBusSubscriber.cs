@@ -1,15 +1,15 @@
-﻿using CSharpFunctionalExtensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDDExample.Domain.Core.MessageBus
+﻿namespace DDDExample.Domain.Core.MessageBus
 {
+    using System.Threading.Tasks;
+    using CSharpFunctionalExtensions;
+
     public interface IMessageBusSubscriber<TMessage>
     {
+        public delegate Task<Result> OnMessageReceived(TMessage message);
+
         void Start();
-        event EventHandler<SubscriberEventArgs<TMessage>> OnMessage;
+
+        event OnMessageReceived OnSubscription;
+        // event EventHandler<SubscriberEventArgs<TMessage>> OnMessage;
     }
 }

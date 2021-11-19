@@ -1,10 +1,10 @@
 namespace DDDExample.Infra.Data.Extensions
 {
     using Context;
-    using DDDExample.Domain.Interfaces.Auth;
     using Domain.Configs;
     using Domain.Entities;
     using Domain.Interfaces;
+    using Domain.Interfaces.Auth;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;

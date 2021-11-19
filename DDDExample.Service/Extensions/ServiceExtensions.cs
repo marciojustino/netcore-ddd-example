@@ -1,8 +1,8 @@
 namespace DDDExample.Service.Extensions
 {
-    using DDDExample.Domain.Interfaces.Auth;
     using Domain.Entities;
     using Domain.Interfaces;
+    using Domain.Interfaces.Auth;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 

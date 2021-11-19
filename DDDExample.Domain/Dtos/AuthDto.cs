@@ -1,7 +1,7 @@
-﻿using System.Text.Json.Serialization;
-
-namespace DDDExample.Domain.Dtos
+﻿namespace DDDExample.Domain.Dtos
 {
+    using System.Text.Json.Serialization;
+
     public class AuthDto
     {
         [JsonPropertyName("email")]

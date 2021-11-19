@@ -1,13 +1,8 @@
-﻿using DDDExample.Domain.Dtos;
-using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDDExample.Service.Validators
+﻿namespace DDDExample.Service.Validators
 {
+    using Domain.Dtos;
+    using FluentValidation;
+
     internal class AuthValidator : AbstractValidator<AuthDto>
     {
         public AuthValidator()
