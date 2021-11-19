@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace DDDExample.Domain.Core.MessageBus
 {
-    public interface IMessageBusSender
+    public interface IMessageBusSubscriber<TMessage>
     {
-        Task<Result> PublishAsTopicAsync(string queueName, string message);
+        void Start();
+        event EventHandler<SubscriberEventArgs<TMessage>> OnMessage;
     }
 }

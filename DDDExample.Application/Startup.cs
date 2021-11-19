@@ -24,6 +24,7 @@ namespace DDDExample.Api
             services.AddServices(Configuration);
             services.AddRepositories(Configuration);
             services.AddMessageBus(Configuration);
+            services.AddHostedService<BackgroundSubscriberWorker>();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "DDDExample.Application", Version = "v1" }); });
         }
 

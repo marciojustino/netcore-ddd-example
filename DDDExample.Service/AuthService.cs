@@ -18,9 +18,9 @@ namespace DDDExample.Service
     public class AuthService : IAuthService
     {
         private readonly IAuthRepository _authRepository;
-        private readonly IMessageBusSender _messageBus;
+        private readonly IMessageBusPublisher<string> _messageBus;
 
-        public AuthService(IAuthRepository authRepository, IMessageBusSender messageBus)
+        public AuthService(IAuthRepository authRepository, IMessageBusPublisher<string> messageBus)
         {
             _authRepository = authRepository;
             _messageBus = messageBus;
@@ -32,7 +32,7 @@ namespace DDDExample.Service
             var userResult = _authRepository.GetAuthorizedUser(new Email(auth.Email), new Password(auth.Password, auth.Salt));
             if (!userResult.HasValue)
             {
-                _messageBus.PublishAsTopicAsync("login_unauthorized", auth.Email);
+                _messageBus.PublishAsync(auth.Email);
                 return Task.FromResult(Result.Failure<User>("User unauthorized"));
             }
 

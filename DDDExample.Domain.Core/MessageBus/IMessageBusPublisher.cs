@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace DDDExample.Domain.Core.MessageBus
 {
-    public interface IMessageBusHandler
+    public interface IMessageBusPublisher<TMessage> : IDisposable
     {
-        Task HandleAsTopicAsync(string queueName, Func<string, Task<Result>> action);
+        Task<Result> PublishAsync(TMessage message);
     }
 }

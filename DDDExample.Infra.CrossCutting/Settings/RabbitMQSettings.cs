@@ -11,5 +11,9 @@ namespace DDDExample.Infra.CrossCutting.Settings
         public string ConfigSectionName { get; set; } = "RabbitMQ";
 
         public string Host { get; set; }
+
+        public string UserName { get; set; }
+
+        public string Password { get; set; }
     }
 }

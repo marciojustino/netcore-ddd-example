@@ -2,6 +2,7 @@ namespace DDDExample.Api
 {
     using DDDExample.Api.Providers;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
 
